@@ -33,6 +33,12 @@ export default function AddTaskForm({
     isSuccess && setTodo(initialState);
   }, [isSuccess]);
 
+  const onChange = (e) => {
+    setTodo((todo) => ({
+      ...todo,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   return (
     <form onSubmit={handleSumbit}>
@@ -41,7 +47,9 @@ export default function AddTaskForm({
         <Input
           value={todo.title}
           bg="gray.50"
-          onChange={(e) => setTodo({ ...todo, title: e.target.value })}
+          name="title"
+          onChange={onChange}
+          isRequired
         />
       </FormControl>
       <FormControl>
@@ -49,7 +57,9 @@ export default function AddTaskForm({
         <Input
           value={todo.description}
           bg="gray.50"
-          onChange={(e) => setTodo({ ...todo, description: e.target.value })}
+          name="description"
+          onChange={onChange}
+          required
         />
       </FormControl>
       <FormControl>
@@ -57,7 +67,8 @@ export default function AddTaskForm({
         <Select
           value={todo.severity}
           bg="gray.50"
-          onChange={(e) => setTodo({ ...todo, severity: e.target.value })}
+          name="severity"
+          onChange={onChange}
         >
           <option>Normal</option>
           <option>Important</option>

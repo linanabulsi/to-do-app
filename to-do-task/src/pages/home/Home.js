@@ -14,9 +14,8 @@ import {
 import React from "react";
 import AddTaskForm from "../../components/add-task-form/AddTaskForm";
 import ToDoContainer from "../../components/to-do-container/ToDoContainer";
-import { useAsync, useBetterAsync } from "../../hooks/useAsync";
+import { useBetterAsync } from "../../hooks/useAsync";
 import { AddIcon } from "@chakra-ui/icons";
-import history from '../../history'
 
 export function Home() {
   const { data, status, error, run: runFetch } = useBetterAsync(
@@ -26,6 +25,8 @@ export function Home() {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const [selectedToDo, setSelectedToDo] = React.useState(null);
+
   const {
     run,
     status: mutationStatus,
@@ -34,16 +35,57 @@ export function Home() {
 
   const onSubmit = (todo) => {
     run(async () => {
-      const data = await fetch("http://localhost:5000/todos", {
-        method: "POST",
-        body: JSON.stringify(todo),
-        headers: { "Content-Type": "application/json" },
-      });
-      const result = await data.json();
-      return result;
+      try {
+        const data = await fetch("http://localhost:5000/todos", {
+          method: "POST",
+          body: JSON.stringify(todo),
+          headers: { "Content-Type": "application/json" },
+        });
+        const result = await data.json();
+        runFetch(async () => {
+          const data = await fetch("http://localhost:5000/todos");
+          const result = await data.json();
+          return result;
+        });
+        return result;
+      } catch (err) {
+        console.log(err);
+      }
     });
-    onClose();////////////
-    history.push('/');////////////
+  };
+
+  const {
+    run: runUpdate,
+    status: updateStatus,
+    error: updateError,
+  } = useBetterAsync();
+
+  const onUpdate = (todo) => {
+    runUpdate(async () => {
+      try {
+        const data = await fetch(`http://localhost:5000/todos/${todo.id}`, {
+          method: "PUT",
+          body: JSON.stringify(todo),
+          headers: { "Content-Type": "application/json" },
+        });
+        const result = await data.json();
+        setSelectedToDo(null);
+        onClose();
+        runFetch(async () => {
+          const data = await fetch("http://localhost:5000/todos");
+          const result = await data.json();
+          return result;
+        });
+        return result;
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  };
+
+  const onCardClick = (todo) => {
+    setSelectedToDo(todo);
+    onOpen();
   };
 
   React.useEffect(() => {
@@ -53,6 +95,11 @@ export function Home() {
       return result;
     });
   }, []);
+
+  const onFormClose = () => {
+    onClose();
+    setSelectedToDo(null);
+  };
 
   return (
     <Flex justify="space-around" m="3">
@@ -64,6 +111,7 @@ export function Home() {
           <ToDoContainer
             title="To Do"
             todos={data.filter((todo) => todo.progress === "to-do")}
+            onCardClick={onCardClick}
           >
             <Button
               rightIcon={<AddIcon />}
@@ -78,28 +126,35 @@ export function Home() {
           <ToDoContainer
             title="In Progress"
             todos={data.filter((todo) => todo.progress === "in-progress")}
+            onCardClick={onCardClick}
           />
           <ToDoContainer
             title="Done"
             todos={data.filter((todo) => todo.progress === "done")}
+            onCardClick={onCardClick}
           />
         </>
       )}
-      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+      <Modal onClose={onFormClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Add Task</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <AddTaskForm
-              onSubmit={onSubmit}
-              isSubmitting={mutationStatus === "loading"}
-              isSuccess={mutationStatus === "success"}
-              buttonName="Add to-do"
+              onSubmit={selectedToDo ? onUpdate : onSubmit}
+              isSubmitting={
+                mutationStatus === "loading" || updateStatus === "loading"
+              }
+              isSuccess={
+                mutationStatus === "success" || updateStatus === "success"
+              }
+              buttonName={selectedToDo ? "Update" : "Add to-do"}
+              currentState={selectedToDo}
             />
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onClose}>Close</Button>
+            <Button onClick={onFormClose}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
