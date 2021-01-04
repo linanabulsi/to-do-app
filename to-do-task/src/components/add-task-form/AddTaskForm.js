@@ -15,8 +15,14 @@ const initialState = {
   description: "",
 };
 
-export default function AddTaskForm({ onSubmit, isSubmitting, isSuccess }) {
-  const [todo, setTodo] = React.useState(initialState);
+export default function AddTaskForm({
+  onSubmit,
+  isSubmitting,
+  isSuccess,
+  currentState,
+  buttonName,
+}) {
+  const [todo, setTodo] = React.useState(currentState || initialState);
 
   const handleSumbit = (e) => {
     e.preventDefault();
@@ -25,8 +31,8 @@ export default function AddTaskForm({ onSubmit, isSubmitting, isSuccess }) {
 
   React.useEffect(() => {
     isSuccess && setTodo(initialState);
-    console.log(isSuccess);
   }, [isSuccess]);
+
 
   return (
     <form onSubmit={handleSumbit}>
@@ -58,8 +64,9 @@ export default function AddTaskForm({ onSubmit, isSubmitting, isSuccess }) {
           <option>Urgent</option>
         </Select>
       </FormControl>
+
       <Button type="submit" disabled={isSubmitting}>
-        Add to-do
+        {buttonName}
       </Button>
     </form>
   );

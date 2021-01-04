@@ -24,7 +24,10 @@ export default function ToDoContainer({ title, todos, children }) {
             key={todo.id}
             severity={todo.severity}
             title={todo.title}
+            progress={todo.progress}
             date={todo.date}
+            description={todo.description}
+            id={todo.id}
           />
         ))}
         {children}

@@ -16,6 +16,7 @@ import AddTaskForm from "../../components/add-task-form/AddTaskForm";
 import ToDoContainer from "../../components/to-do-container/ToDoContainer";
 import { useAsync, useBetterAsync } from "../../hooks/useAsync";
 import { AddIcon } from "@chakra-ui/icons";
+import history from '../../history'
 
 export function Home() {
   const { data, status, error, run: runFetch } = useBetterAsync(
@@ -41,6 +42,8 @@ export function Home() {
       const result = await data.json();
       return result;
     });
+    onClose();////////////
+    history.push('/');////////////
   };
 
   React.useEffect(() => {
@@ -92,6 +95,7 @@ export function Home() {
               onSubmit={onSubmit}
               isSubmitting={mutationStatus === "loading"}
               isSuccess={mutationStatus === "success"}
+              buttonName="Add to-do"
             />
           </ModalBody>
           <ModalFooter>

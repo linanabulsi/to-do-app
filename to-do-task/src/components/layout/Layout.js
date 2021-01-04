@@ -7,7 +7,6 @@ export default function Layout({ children }) {
   return (
     <Flex direction="column" border="2px solid black">
       <Flex justify="space-between" border="2px solid black">
-      {/* <Flex justify="space-around"> */}
         <UnorderedList styleType="none">
             <ListItem px="30px" py="6px" border="2px solid black">
               <Link to="/">LOGO</Link>
@@ -15,7 +14,6 @@ export default function Layout({ children }) {
             <ListItem>My To Do App</ListItem>
             <ListItem>item3</ListItem>
         </UnorderedList>
-        {/* </Flex> */}
       </Flex>
 
       {children}
