@@ -4,6 +4,7 @@ import {
   FormLabel,
   Input,
   Select,
+  Text,
 } from "@chakra-ui/react";
 import React from "react";
 
@@ -23,10 +24,47 @@ export default function AddTaskForm({
   buttonName,
 }) {
   const [todo, setTodo] = React.useState(currentState || initialState);
+  const [errors, setErrors] = React.useState({});
+  const [touched, setTouched] = React.useState({});
 
   const handleSumbit = (e) => {
     e.preventDefault();
-    onSubmit(todo);
+    const formValidation = Object.keys({
+      title: todo.title,
+      description: todo.description,
+    }).reduce(
+      (acc, key) => {
+        const newError = validate[key](todo[key]);
+        const newTouched = { [key]: true };
+        return {
+          errors: {
+            ...acc.errors,
+            ...(newError && { [key]: newError }),
+          },
+          touched: {
+            ...acc.touched,
+            ...newTouched,
+          },
+        };
+      },
+      {
+        errors: { ...errors },
+        touched: { ...touched },
+      }
+    );
+    setErrors(formValidation.errors);
+    setTouched(formValidation.touched);
+    if (
+      !Object.values(formValidation.errors).length &&
+      Object.values(formValidation.touched).length ===
+        Object.values({
+          title: todo.title,
+          description: todo.description,
+        }).length &&
+      Object.values(formValidation.touched).every((t) => t === true)
+    ) {
+      onSubmit(todo);
+    }
   };
 
   React.useEffect(() => {
@@ -38,10 +76,49 @@ export default function AddTaskForm({
       ...todo,
       [e.target.name]: e.target.value,
     }));
+
+    setTouched({
+      ...touched,
+      [e.target.name]: true,
+    });
+  };
+
+  const handleBlur = (e) => {
+    const { [e.target.name]: removedError, ...rest } = errors;
+    const error = validate[e.target.name](e.target.value);
+    setErrors({
+      ...rest,
+      ...(error && { [e.target.name]: touched[e.target.name] && error }),
+    });
+  };
+
+  const titleValidation = (title) => {
+    if (title.trim() === "") {
+      return "Title is required";
+    }
+    if (title.trim().length < 6 || title.trim().length > 10) {
+      return "Title needs to be between six to ten characters";
+    }
+    return null;
+  };
+
+  const descriptionValidation = (description) => {
+    if (description.trim() === "") {
+      return "Description is required";
+    }
+    if (description.trim().length < 8) {
+      return "Description needs to be at least eight characters";
+    }
+    return null;
+  };
+
+  const validate = {
+    title: titleValidation,
+    description: descriptionValidation,
   };
 
   return (
-    <form onSubmit={handleSumbit}>
+    <form onSubmit={handleSumbit} autoComplete="off">
       <FormControl>
         <FormLabel pt="10px">Name</FormLabel>
         <Input
@@ -49,8 +126,10 @@ export default function AddTaskForm({
           bg="gray.50"
           name="title"
           onChange={onChange}
-          isRequired
+          onBlur={handleBlur}
+          // isRequired
         />
+        <Text color="red.500">{touched.title && errors.title}</Text>
       </FormControl>
       <FormControl>
         <FormLabel pt="10px">Description</FormLabel>
@@ -59,8 +138,10 @@ export default function AddTaskForm({
           bg="gray.50"
           name="description"
           onChange={onChange}
-          required
+          onBlur={handleBlur}
+          // isRequired
         />
+        <Text color="red.500">{touched.description && errors.description}</Text>
       </FormControl>
       <FormControl>
         <FormLabel pt="10px">Severity</FormLabel>
