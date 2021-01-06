@@ -35,7 +35,7 @@
     {
       "id": 5,
       "title": "Task #6",
-      "severity": "Important",
+      "severity": "Normal",
       "progress": "in-progress",
       "date": "Wed Aug 05 2020",
       "description": "Something"
@@ -66,11 +66,35 @@
     },
     {
       "title": "Task #11",
-      "severity": "Normal",
+      "severity": "Important",
       "progress": "to-do",
       "date": "Thu Dec 31 2020",
       "description": "Anythingg",
       "id": 9
+    },
+    {
+      "title": "Task #13",
+      "severity": "Normal",
+      "progress": "to-do",
+      "date": "Mon Jan 04 2021",
+      "description": "anything",
+      "id": 10
+    },
+    {
+      "title": "Task #14",
+      "severity": "Urgent",
+      "progress": "to-do",
+      "date": "Mon Jan 04 2021",
+      "description": "anything",
+      "id": 11
+    },
+    {
+      "title": "Task#15",
+      "severity": "Normal",
+      "progress": "to-do",
+      "date": "Mon Jan 04 2021",
+      "description": "anything",
+      "id": 12
     }
   ]
 }

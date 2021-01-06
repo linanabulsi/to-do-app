@@ -2,7 +2,7 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 import React from "react";
 import ToDoCard from "../to-do-card/ToDoCard";
 
-export default function ToDoContainer({ title, todos, children }) {
+export default function ToDoContainer({ title, todos, children, onCardClick }) {
   return (
     <Flex
       flexDirection="column"
@@ -24,10 +24,8 @@ export default function ToDoContainer({ title, todos, children }) {
             key={todo.id}
             severity={todo.severity}
             title={todo.title}
-            progress={todo.progress}
             date={todo.date}
-            description={todo.description}
-            id={todo.id}
+            onClick={() => onCardClick(todo)}
           />
         ))}
         {children}
