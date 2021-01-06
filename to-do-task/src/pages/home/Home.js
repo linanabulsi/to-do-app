@@ -101,39 +101,6 @@ export function Home() {
     setSelectedToDo(null);
   };
 
-  const titleValidation = (title) => {
-    if (title.trim() === "") {
-      return "Title is required";
-    }
-    if (title.trim().length < 6 || title.trim().length > 10) {
-      return "Title needs to be between six to ten characters";
-    }
-    return null;
-  };
-
-  const descriptionValidation = (description) => {
-    if (description.trim() === "") {
-      return "Description is required";
-    }
-    if (description.trim().length < 8) {
-      return "Description needs to be at least eight characters";
-    }
-    return null;
-  };
-
-  const validate = {
-    title: titleValidation,
-    description: descriptionValidation,
-  };
-
-  const initialState = {
-    title: "",
-    severity: "Normal",
-    progress: "to-do",
-    date: new Date().toDateString(),
-    description: "",
-  };
-
   return (
     <Flex justify="space-around" m="3">
       {status === "error" && <Box>{error}</Box>}
