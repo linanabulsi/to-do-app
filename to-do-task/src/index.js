@@ -4,10 +4,12 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider } from "@chakra-ui/react";
-import { BrowserRouter as Router } from "react-router-dom";
+// import { BrowserRouter as Router } from "react-router-dom";
+import { Router } from "react-router-dom";
+import history from './history'
 
 ReactDOM.render(
-  <Router>
+  <Router history={history}>
     <ChakraProvider>
       <App />
     </ChakraProvider>
