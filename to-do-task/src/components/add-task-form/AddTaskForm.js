@@ -7,6 +7,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
+import { useForm } from "../../hooks/use-form";
 
 const initialState = {
   title: "",
@@ -17,79 +18,30 @@ const initialState = {
 };
 
 export default function AddTaskForm({
-  onSubmit,
+  onSubmitt,
   isSubmitting,
   isSuccess,
   currentState,
   buttonName,
 }) {
   const [todo, setTodo] = React.useState(currentState || initialState);
-  const [errors, setErrors] = React.useState({});
-  const [touched, setTouched] = React.useState({});
-
-  const handleSumbit = (e) => {
-    e.preventDefault();
-    const formValidation = Object.keys({
-      title: todo.title,
-      description: todo.description,
-    }).reduce(
-      (acc, key) => {
-        const newError = validate[key](todo[key]);
-        const newTouched = { [key]: true };
-        return {
-          errors: {
-            ...acc.errors,
-            ...(newError && { [key]: newError }),
-          },
-          touched: {
-            ...acc.touched,
-            ...newTouched,
-          },
-        };
-      },
-      {
-        errors: { ...errors },
-        touched: { ...touched },
-      }
-    );
-    setErrors(formValidation.errors);
-    setTouched(formValidation.touched);
-    if (
-      !Object.values(formValidation.errors).length &&
-      Object.values(formValidation.touched).length ===
-        Object.values({
-          title: todo.title,
-          description: todo.description,
-        }).length &&
-      Object.values(formValidation.touched).every((t) => t === true)
-    ) {
-      onSubmit(todo);
-    }
-  };
 
   React.useEffect(() => {
-    isSuccess && setTodo(initialState);
+    // isSuccess && setTodo(initialState);
+    isSuccess && setTodoCard(initialState);
   }, [isSuccess]);
 
-  const onChange = (e) => {
-    setTodo((todo) => ({
-      ...todo,
-      [e.target.name]: e.target.value,
-    }));
-
-    setTouched({
-      ...touched,
-      [e.target.name]: true,
-    });
+  const onSubmit = (e) => {
+    e.preventDefault();
+    handleSubmit();
   };
 
-  const handleBlur = (e) => {
-    const { [e.target.name]: removedError, ...rest } = errors;
-    const error = validate[e.target.name](e.target.value);
-    setErrors({
-      ...rest,
-      ...(error && { [e.target.name]: touched[e.target.name] && error }),
-    });
+  const onChange = (e) => {
+    handleChange(e.target.name, e.target.value, e.target.type);
+  };
+
+  const onBlur = (e) => {
+    handleBlur(e.target.name, e.target.value);
   };
 
   const titleValidation = (title) => {
@@ -117,16 +69,26 @@ export default function AddTaskForm({
     description: descriptionValidation,
   };
 
+  const {
+    todoCard,
+    setTodoCard,
+    errors,
+    touched,
+    handleSubmit,
+    handleBlur,
+    handleChange,
+  } = useForm(todo, validate, onSubmitt);
+
   return (
-    <form onSubmit={handleSumbit} autoComplete="off">
+    <form onSubmit={onSubmit} autoComplete="off">
       <FormControl>
         <FormLabel pt="10px">Name</FormLabel>
         <Input
-          value={todo.title}
+          value={todoCard.title}
           bg="gray.50"
           name="title"
           onChange={onChange}
-          onBlur={handleBlur}
+          onBlur={onBlur}
           // isRequired
         />
         <Text color="red.500">{touched.title && errors.title}</Text>
@@ -134,11 +96,11 @@ export default function AddTaskForm({
       <FormControl>
         <FormLabel pt="10px">Description</FormLabel>
         <Input
-          value={todo.description}
+          value={todoCard.description}
           bg="gray.50"
           name="description"
           onChange={onChange}
-          onBlur={handleBlur}
+          onBlur={onBlur}
           // isRequired
         />
         <Text color="red.500">{touched.description && errors.description}</Text>
@@ -146,7 +108,7 @@ export default function AddTaskForm({
       <FormControl>
         <FormLabel pt="10px">Severity</FormLabel>
         <Select
-          value={todo.severity}
+          value={todoCard.severity}
           bg="gray.50"
           name="severity"
           onChange={onChange}

@@ -142,7 +142,7 @@ export function Home() {
           <ModalCloseButton />
           <ModalBody>
             <AddTaskForm
-              onSubmit={selectedToDo ? onUpdate : onSubmit}
+              onSubmitt={selectedToDo ? onUpdate : onSubmit}
               isSubmitting={
                 mutationStatus === "loading" || updateStatus === "loading"
               }

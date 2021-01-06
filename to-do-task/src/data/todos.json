@@ -58,51 +58,19 @@
     },
     {
       "title": "Task #20",
-      "severity": "Urgent",
+      "severity": "Important",
       "progress": "done",
       "date": "Wed Aug 05 2020",
-      "description": "Something",
+      "description": "Somethinggg",
       "id": 8
     },
     {
       "title": "Task #11",
-      "severity": "Important",
-      "progress": "to-do",
-      "date": "Thu Dec 31 2020",
-      "description": "Anythingg",
-      "id": 9
-    },
-    {
-      "title": "Task #13",
-      "severity": "Normal",
-      "progress": "to-do",
-      "date": "Mon Jan 04 2021",
-      "description": "anything",
-      "id": 10
-    },
-    {
-      "title": "Task #14",
       "severity": "Urgent",
       "progress": "to-do",
-      "date": "Mon Jan 04 2021",
-      "description": "anything",
-      "id": 11
-    },
-    {
-      "title": "Task#15",
-      "severity": "Important",
-      "progress": "to-do",
-      "date": "Mon Jan 04 2021",
-      "description": "anything",
-      "id": 12
-    },
-    {
-      "title": "Task #16",
-      "severity": "Normal",
-      "progress": "to-do",
-      "date": "Tue Jan 05 2021",
-      "description": "Somethingggg",
-      "id": 13
+      "date": "Wed Jan 06 2021",
+      "description": "Anything Something",
+      "id": 9
     }
   ]
 }
