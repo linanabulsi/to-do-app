@@ -20,7 +20,7 @@
       "id": 3,
       "title": "Task #3",
       "severity": "Urgent",
-      "progress": "in-progress",
+      "progress": "in_progress",
       "date": "Wed Aug 05 2020",
       "description": "Something"
     },
@@ -28,7 +28,7 @@
       "id": 4,
       "title": "Task #4",
       "severity": "Urgent",
-      "progress": "to-do",
+      "progress": "to_do",
       "date": "Wed Aug 05 2020",
       "description": "Something"
     },
@@ -36,7 +36,7 @@
       "id": 5,
       "title": "Task #6",
       "severity": "Normal",
-      "progress": "in-progress",
+      "progress": "in_progress",
       "date": "Wed Aug 05 2020",
       "description": "Somethingg"
     },
@@ -44,14 +44,14 @@
       "id": 6,
       "title": "Task #7",
       "severity": "Normal",
-      "progress": "to-do",
+      "progress": "to_do",
       "date": "Wed Aug 05 2020",
       "description": "Something"
     },
     {
       "title": "Task #10",
       "severity": "Important",
-      "progress": "to-do",
+      "progress": "to_do",
       "date": "Wed Aug 05 2020",
       "description": "Somethingg",
       "id": 7
@@ -61,16 +61,40 @@
       "severity": "Important",
       "progress": "done",
       "date": "Wed Aug 05 2020",
-      "description": "Somethinggg",
+      "description": "Somethingg",
       "id": 8
     },
     {
       "title": "Task #11",
       "severity": "Urgent",
-      "progress": "to-do",
+      "progress": "to_do",
       "date": "Wed Jan 06 2021",
       "description": "Anything Something",
       "id": 9
+    },
+    {
+      "title": "Task #12",
+      "severity": "Normal",
+      "progress": "to_do",
+      "date": "Thu Jan 07 2021",
+      "description": "anythingg",
+      "id": 10
+    },
+    {
+      "title": "Task #13",
+      "severity": "Important",
+      "progress": "in_progress",
+      "date": "Thu Jan 07 2021",
+      "description": "anything",
+      "id": 11
+    },
+    {
+      "title": "Task #14",
+      "severity": "Normal",
+      "progress": "in_progress",
+      "date": "Sat Jan 09 2021",
+      "description": "Anything",
+      "id": 12
     }
   ]
 }

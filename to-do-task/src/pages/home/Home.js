@@ -16,6 +16,13 @@ import AddTaskForm from "../../components/add-task-form/AddTaskForm";
 import ToDoContainer from "../../components/to-do-container/ToDoContainer";
 import { useBetterAsync } from "../../hooks/useAsync";
 import { AddIcon } from "@chakra-ui/icons";
+import { DragDropContext } from "react-beautiful-dnd";
+
+const progress = {
+  to_do: "To Do",
+  in_progress: "In Progress",
+  done: "Done",
+};
 
 export function Home() {
   const { data, status, error, run: runFetch } = useBetterAsync(
@@ -101,6 +108,21 @@ export function Home() {
     setSelectedToDo(null);
   };
 
+  function handleOnDragEnd(result) {
+    const { source, destination } = result;
+    if (!destination) return;
+
+    if (source.droppableId !== destination.droppableId) {
+      const todo = data.find(
+        (todo) => todo.id === parseInt(result.draggableId)
+      );
+      todo.progress = Object.keys(progress).find(
+        (key) => progress[key] === destination.droppableId
+      );
+      onUpdate(todo);
+    }
+  }
+
   return (
     <Flex justify="space-around" m="3">
       {status === "error" && <Box>{error}</Box>}
@@ -108,31 +130,33 @@ export function Home() {
 
       {status === "success" && (
         <>
-          <ToDoContainer
-            title="To Do"
-            todos={data.filter((todo) => todo.progress === "to-do")}
-            onCardClick={onCardClick}
-          >
-            <Button
-              rightIcon={<AddIcon />}
-              colorScheme="teal"
-              variant="outline"
-              mt="2"
-              onClick={onOpen}
+          <DragDropContext onDragEnd={handleOnDragEnd}>
+            <ToDoContainer
+              title="To Do"
+              todos={data.filter((todo) => todo.progress === "to_do")}
+              onCardClick={onCardClick}
             >
-              Add task
-            </Button>
-          </ToDoContainer>
-          <ToDoContainer
-            title="In Progress"
-            todos={data.filter((todo) => todo.progress === "in-progress")}
-            onCardClick={onCardClick}
-          />
-          <ToDoContainer
-            title="Done"
-            todos={data.filter((todo) => todo.progress === "done")}
-            onCardClick={onCardClick}
-          />
+              <Button
+                rightIcon={<AddIcon />}
+                colorScheme="teal"
+                variant="outline"
+                mt="2"
+                onClick={onOpen}
+              >
+                Add task
+              </Button>
+            </ToDoContainer>
+            <ToDoContainer
+              title="In Progress"
+              todos={data.filter((todo) => todo.progress === "in_progress")}
+              onCardClick={onCardClick}
+            />
+            <ToDoContainer
+              title="Done"
+              todos={data.filter((todo) => todo.progress === "done")}
+              onCardClick={onCardClick}
+            />
+          </DragDropContext>
         </>
       )}
       <Modal onClose={onFormClose} isOpen={isOpen} isCentered>

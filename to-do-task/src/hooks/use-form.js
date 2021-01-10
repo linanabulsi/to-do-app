@@ -1,39 +1,102 @@
 import React from "react";
 
-export const useForm = (initialState, validate, onSubmit) => {
-  const [todoCard, setTodoCard] = React.useState(initialState);
-  const [errors, setErrors] = React.useState({});
-  const [touched, setTouched] = React.useState({});
+const actionTypes = {
+  ON_CHANGE_VALUES: "ON_CHANGE_VALUES",
+  ON_CHANGE_TOUCHED: "ON_CHANGE_TOUCHED",
+  ON_BLUR: "ON_BLUR",
+  ON_SUBMIT: "ON_SUBMIT",
+  ON_INITIAL_VALUES: "ON_INITAL_VALUES",
+};
 
-  const handleChange = (name, value, type) => {
-    setTodoCard((todo) => ({
-      ...todo,
-      [name]: value,
-    }));
+function asyncReducer(prevState, action) {
+  switch (action.type) {
+    case actionTypes.ON_CHANGE_VALUES:
+      return {
+        ...prevState,
+        values: { ...prevState.values, [action.field]: action.value },
+      };
+    case actionTypes.ON_CHANGE_TOUCHED:
+      return {
+        ...prevState,
+        touched: { ...prevState.touched, [action.field]: action.value },
+      };
+    case actionTypes.ON_BLUR:
+      return {
+        ...prevState,
+        errors: { ...prevState.errors, [action.field]: action.value },
+      };
+    case actionTypes.ON_SUBMIT:
+      return {
+        ...prevState,
+        errors: action.errors,
+        touched: action.touched,
+      };
+    case actionTypes.ON_INITIAL_VALUES:
+      return {
+        ...prevState,
+        values: action.initial,
+      };
+    default:
+      throw new Error("action not defined");
+  }
+}
 
-    type === "text" &&
-      setTouched({
-        ...touched,
-        [name]: true,
+const initializer = (initialState, validationScheme) => {
+  const errors = Object.assign(
+    {},
+    ...Object.keys(validationScheme).map((key) => ({ [key]: null }))
+  );
+  const touched = Object.assign(
+    {},
+    ...Object.keys(validationScheme).map((key) => ({ [key]: false }))
+  );
+  return { values: initialState, errors, touched };
+};
+
+export const useForm = (initialState, validationScheme, onSubmit) => {
+  const [state, dispatch] = React.useReducer(asyncReducer, initialState, () =>
+    initializer(initialState, validationScheme)
+  );
+
+  const setInitialState = () => {
+    dispatch({
+      type: actionTypes.ON_INITIAL_VALUES,
+      initial: initialState,
+    });
+  };
+
+  const handleChange = (e) => {
+    dispatch({
+      type: actionTypes.ON_CHANGE_VALUES,
+      field: [e.target.name],
+      value: e.target.value,
+    });
+    e.target.type === "text" &&
+      dispatch({
+        type: actionTypes.ON_CHANGE_TOUCHED,
+        field: [e.target.name],
+        value: true,
       });
   };
 
-  const handleBlur = (name, value) => {
-    const { [name]: removedError, ...rest } = errors;
-    const error = validate[name](value);
-    setErrors({
-      ...rest,
-      ...(error && { [name]: touched[name] && error }),
+  const handleBlur = (e) => {
+    dispatch({
+      type: actionTypes.ON_BLUR,
+      field: [e.target.name],
+      value: null,
+    });
+    const error = validationScheme[e.target.name](e.target.value);
+    dispatch({
+      type: actionTypes.ON_BLUR,
+      field: [e.target.name],
+      value: state.touched[e.target.name] ? error : null,
     });
   };
 
   const handleSubmit = () => {
-    const formValidation = Object.keys({
-      title: todoCard.title,
-      description: todoCard.description,
-    }).reduce(
+    const formValidation = Object.keys(validationScheme).reduce(
       (acc, key) => {
-        const newError = validate[key](todoCard[key]);
+        const newError = validationScheme[key](state.values[key]);
         const newTouched = { [key]: true };
         return {
           errors: {
@@ -47,24 +110,24 @@ export const useForm = (initialState, validate, onSubmit) => {
         };
       },
       {
-        errors: { ...errors },
-        touched: { ...touched },
+        errors: { ...state.errors },
+        touched: { ...state.touched },
       }
     );
-    setErrors(formValidation.errors);
-    setTouched(formValidation.touched);
+    dispatch({
+      type: actionTypes.ON_SUBMIT,
+      errors: formValidation.errors,
+      touched: formValidation.touched,
+    });
     if (
-      !Object.values(formValidation.errors).length &&
+      Object.values(formValidation.errors).every((t) => t === null) &&
       Object.values(formValidation.touched).length ===
-        Object.values({
-          title: todoCard.title,
-          description: todoCard.description,
-        }).length &&
-      Object.values(formValidation.touched).every((t) => t === true)
+        Object.values(validationScheme).length &&
+      Object.values(formValidation.touched).every(Boolean)
     ) {
-      onSubmit(todoCard);
+      onSubmit(state.values);
     }
   };
 
-  return { todoCard, setTodoCard, errors, touched, handleSubmit, handleBlur, handleChange };
+  return { ...state, handleSubmit, handleBlur, handleChange, setInitialState };
 };

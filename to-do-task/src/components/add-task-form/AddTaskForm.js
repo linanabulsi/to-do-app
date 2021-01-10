@@ -28,7 +28,7 @@ export default function AddTaskForm({
 
   React.useEffect(() => {
     // isSuccess && setTodo(initialState);
-    isSuccess && setTodoCard(initialState);
+    isSuccess && setInitialState();
   }, [isSuccess]);
 
   const onSubmit = (e) => {
@@ -37,11 +37,11 @@ export default function AddTaskForm({
   };
 
   const onChange = (e) => {
-    handleChange(e.target.name, e.target.value, e.target.type);
+    handleChange(e);
   };
 
   const onBlur = (e) => {
-    handleBlur(e.target.name, e.target.value);
+    handleBlur(e);
   };
 
   const titleValidation = (title) => {
@@ -64,27 +64,27 @@ export default function AddTaskForm({
     return null;
   };
 
-  const validate = {
+  const validationScheme = {
     title: titleValidation,
     description: descriptionValidation,
   };
 
   const {
-    todoCard,
-    setTodoCard,
+    values,
     errors,
     touched,
     handleSubmit,
     handleBlur,
     handleChange,
-  } = useForm(todo, validate, onSubmitt);
+    setInitialState
+  } = useForm(todo, validationScheme, onSubmitt);
 
   return (
     <form onSubmit={onSubmit} autoComplete="off">
       <FormControl>
         <FormLabel pt="10px">Name</FormLabel>
         <Input
-          value={todoCard.title}
+          value={values.title}
           bg="gray.50"
           name="title"
           onChange={onChange}
@@ -96,7 +96,7 @@ export default function AddTaskForm({
       <FormControl>
         <FormLabel pt="10px">Description</FormLabel>
         <Input
-          value={todoCard.description}
+          value={values.description}
           bg="gray.50"
           name="description"
           onChange={onChange}
@@ -108,7 +108,7 @@ export default function AddTaskForm({
       <FormControl>
         <FormLabel pt="10px">Severity</FormLabel>
         <Select
-          value={todoCard.severity}
+          value={values.severity}
           bg="gray.50"
           name="severity"
           onChange={onChange}
