@@ -4,8 +4,10 @@ import {
   FormLabel,
   Input,
   Select,
+  Text,
 } from "@chakra-ui/react";
 import React from "react";
+import { useForm } from "../../hooks/use-form";
 
 const initialState = {
   title: "",
@@ -16,7 +18,7 @@ const initialState = {
 };
 
 export default function AddTaskForm({
-  onSubmit,
+  onSubmitt,
   isSubmitting,
   isSuccess,
   currentState,
@@ -24,48 +26,89 @@ export default function AddTaskForm({
 }) {
   const [todo, setTodo] = React.useState(currentState || initialState);
 
-  const handleSumbit = (e) => {
-    e.preventDefault();
-    onSubmit(todo);
-  };
-
   React.useEffect(() => {
-    isSuccess && setTodo(initialState);
+    // isSuccess && setTodo(initialState);
+    isSuccess && setInitialState();
   }, [isSuccess]);
 
-  const onChange = (e) => {
-    setTodo((todo) => ({
-      ...todo,
-      [e.target.name]: e.target.value,
-    }));
+  const onSubmit = (e) => {
+    e.preventDefault();
+    handleSubmit();
   };
 
+  const onChange = (e) => {
+    handleChange(e);
+  };
+
+  const onBlur = (e) => {
+    handleBlur(e);
+  };
+
+  const titleValidation = (title) => {
+    if (title.trim() === "") {
+      return "Title is required";
+    }
+    if (title.trim().length < 6 || title.trim().length > 10) {
+      return "Title needs to be between six to ten characters";
+    }
+    return null;
+  };
+
+  const descriptionValidation = (description) => {
+    if (description.trim() === "") {
+      return "Description is required";
+    }
+    if (description.trim().length < 8) {
+      return "Description needs to be at least eight characters";
+    }
+    return null;
+  };
+
+  const validationScheme = {
+    title: titleValidation,
+    description: descriptionValidation,
+  };
+
+  const {
+    values,
+    errors,
+    touched,
+    handleSubmit,
+    handleBlur,
+    handleChange,
+    setInitialState
+  } = useForm(todo, validationScheme, onSubmitt);
+
   return (
-    <form onSubmit={handleSumbit}>
+    <form onSubmit={onSubmit} autoComplete="off">
       <FormControl>
         <FormLabel pt="10px">Name</FormLabel>
         <Input
-          value={todo.title}
+          value={values.title}
           bg="gray.50"
           name="title"
           onChange={onChange}
-          isRequired
+          onBlur={onBlur}
+          // isRequired
         />
+        <Text color="red.500">{touched.title && errors.title}</Text>
       </FormControl>
       <FormControl>
         <FormLabel pt="10px">Description</FormLabel>
         <Input
-          value={todo.description}
+          value={values.description}
           bg="gray.50"
           name="description"
           onChange={onChange}
-          required
+          onBlur={onBlur}
+          // isRequired
         />
+        <Text color="red.500">{touched.description && errors.description}</Text>
       </FormControl>
       <FormControl>
         <FormLabel pt="10px">Severity</FormLabel>
         <Select
-          value={todo.severity}
+          value={values.severity}
           bg="gray.50"
           name="severity"
           onChange={onChange}

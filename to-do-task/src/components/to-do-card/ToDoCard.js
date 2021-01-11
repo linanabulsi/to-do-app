@@ -7,12 +7,10 @@ const severityColors = {
   Urgent: "red",
 };
 
-export default function ToDoCard({
-  title,
-  severity = "Important",
-  date,
-  onClick,
-}) {
+const ToDoCard = React.forwardRef(function ToDoCard(
+  { title, id, severity = "Important", date, onClick, ...rest },
+  ref
+) {
   return (
     <Flex
       align="center"
@@ -26,6 +24,8 @@ export default function ToDoCard({
       borderColor={`${severityColors[severity]}.300`}
       onClick={onClick}
       cursor="pointer"
+      ref={ref}
+      {...rest}
     >
       <Text>{title}</Text>
       <Flex direction="column" h="full" justify="space-between">
@@ -36,4 +36,6 @@ export default function ToDoCard({
       </Flex>
     </Flex>
   );
-}
+});
+
+export default ToDoCard;
