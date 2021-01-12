@@ -80,11 +80,6 @@ export const useForm = (initialState, validationScheme, onSubmit) => {
   };
 
   const handleBlur = (e) => {
-    dispatch({
-      type: actionTypes.ON_BLUR,
-      field: [e.target.name],
-      value: null,
-    });
     const error = validationScheme[e.target.name](e.target.value);
     dispatch({
       type: actionTypes.ON_BLUR,

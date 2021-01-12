@@ -12,7 +12,7 @@ import { useForm } from "../../hooks/use-form";
 const initialState = {
   title: "",
   severity: "Normal",
-  progress: "to-do",
+  progress: "to_do",
   date: new Date().toDateString(),
   description: "",
 };
@@ -27,7 +27,6 @@ export default function AddTaskForm({
   const [todo, setTodo] = React.useState(currentState || initialState);
 
   React.useEffect(() => {
-    // isSuccess && setTodo(initialState);
     isSuccess && setInitialState();
   }, [isSuccess]);
 
