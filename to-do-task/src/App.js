@@ -6,16 +6,18 @@ import { Home } from "./pages/home/Home";
 import BarChart from "./components/charts/BarChart";
 import { PieChart } from "./components/charts/PieChart";
 import { useQuery } from "react-query";
+import { TodoProvider } from "./hooks/todos-context";
 
-export const TodoContext = React.createContext();
+// export const TodoContext = React.createContext();
 
 function App() {
-  const { data, status, error, isFetching, refetch } = useQuery("todos", () =>
-    fetch("http://localhost:5000/todos").then((res) => res.json())
-  );
+  // const { data, status, error, isFetching, refetch } = useQuery("todos", () =>
+  //   fetch("http://localhost:5000/todos").then((res) => res.json())
+  // );
 
   return (
-    <TodoContext.Provider value={[data, status, error]}>
+    // <TodoContext.Provider value={{data, status, error}}>
+    <TodoProvider>
       <div className="App">
         <Layout>
           <Switch>
@@ -31,7 +33,8 @@ function App() {
           </Switch>
         </Layout>
       </div>
-    </TodoContext.Provider>
+    </TodoProvider>
+    // </TodoContext.Provider>
   );
 }
 

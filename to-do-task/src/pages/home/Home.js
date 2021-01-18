@@ -20,6 +20,7 @@ import { AddIcon } from "@chakra-ui/icons";
 import { DragDropContext } from "react-beautiful-dnd";
 import { useQueryClient, useMutation } from "react-query";
 import { TodoContext } from "../../App";
+import { useTodos } from "../../hooks/todos-context";
 
 const progress = {
   to_do: "To Do",
@@ -30,7 +31,8 @@ const progress = {
 export function Home() {
   const queryClient = useQueryClient();
 
-  const [data, status, error] = React.useContext(TodoContext);
+  // const {data, status, error} = React.useContext(TodoContext);
+  const {data, status, error} = useTodos();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
