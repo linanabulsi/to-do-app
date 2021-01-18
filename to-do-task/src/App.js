@@ -1,22 +1,26 @@
 import React from "react";
 import "./App.css";
 import Layout from "./components/layout/Layout";
-import { BrowserRouter as Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { Home } from "./pages/home/Home";
 import BarChart from "./components/charts/BarChart";
 import { PieChart } from "./components/charts/PieChart";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { useQuery } from "react-query";
 
-const queryClient = new QueryClient();
+export const TodoContext = React.createContext();
 
 function App() {
+  const { data, status, error, isFetching, refetch } = useQuery("todos", () =>
+    fetch("http://localhost:5000/todos").then((res) => res.json())
+  );
+
   return (
-    <QueryClientProvider client={queryClient}>
+    <TodoContext.Provider value={[data, status, error]}>
       <div className="App">
         <Layout>
           <Switch>
-            <Route exact path="/" render={() => <Home />}>
-              {/* <Home /> */}
+            <Route exact path="/">
+              <Home />
             </Route>
             <Route exact path="/barchart">
               <BarChart />
@@ -27,7 +31,7 @@ function App() {
           </Switch>
         </Layout>
       </div>
-    </QueryClientProvider>
+    </TodoContext.Provider>
   );
 }
 

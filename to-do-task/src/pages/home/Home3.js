@@ -15,11 +15,9 @@ import React from "react";
 import AddTaskForm from "../../components/add-task-form/AddTaskForm";
 import AddTaskFormik from "../../components/add-task-form/AddTaskFormik";
 import ToDoContainer from "../../components/to-do-container/ToDoContainer";
-import { useBetterAsync } from "../../hooks/useAsync";
 import { AddIcon } from "@chakra-ui/icons";
 import { DragDropContext } from "react-beautiful-dnd";
 import { useQueryClient, useMutation } from "react-query";
-import { TodoContext } from "../../App";
 
 const progress = {
   to_do: "To Do",
@@ -27,10 +25,20 @@ const progress = {
   done: "Done",
 };
 
-export function Home() {
+export function Home3() {
   const queryClient = useQueryClient();
 
-  const [data, status, error] = React.useContext(TodoContext);
+  const queryState = queryClient.getQueryState("todos");
+  const { data, status, error } = queryState;
+
+  //  const queryCache = new QueryCache({
+  //   onError: error => {
+  //     console.log(error)
+  //   },
+  // })
+
+  // const query = queryCache.find('fetchData')
+  // console.log('query', query);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -81,6 +89,8 @@ export function Home() {
         setSelectedToDo(null);
         onClose();
         queryClient.invalidateQueries("todos");
+        // queryCache.invalidateQueries("todos");
+        // refetch()
       },
       onError: (err) => console.log(err),
     }
