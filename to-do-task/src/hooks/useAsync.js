@@ -37,7 +37,8 @@ function asyncReducer(prevState, action) {
   }
 }
 
-export const useBetterAsync = (initialState) => {
+// export const useBetterAsync = (initialState, {onSuccess = data => data, onError }) => {
+  export const useBetterAsync = (initialState) => {
   const [{ url, ...state }, dispatch] = React.useReducer(asyncReducer, {
     data: null,
     error: null,
@@ -49,9 +50,11 @@ export const useBetterAsync = (initialState) => {
     dispatch({ type: actionTypes.ON_LOADING });
     asyncCallback().then(
       (data) => {
+        // const newData = onSuccess(data);
+
         dispatch({
           type: actionTypes.ON_SUCCESS,
-          payload: { data: data },
+          payload: { data: data }, //////
         });
       },
       (error) => {
