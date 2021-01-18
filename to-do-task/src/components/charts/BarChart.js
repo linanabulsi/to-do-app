@@ -1,10 +1,13 @@
 import React from "react";
 import { ResponsiveBar } from "@nivo/bar";
 import { Flex, Text } from "@chakra-ui/react";
-import todosData from "../../data/todos.json";
+import { TodoContext } from "../../App";
+import { useTodos } from "../../hooks/todos-context";
 
 export default function BarChart() {
-  const data = todosData.todos;
+  // const {data} = React.useContext(TodoContext);
+  const {data} = useTodos();
+
   const unique = [...new Set(data.map((item) => item.date))];
   const barChartData = [];
 

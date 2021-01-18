@@ -1,9 +1,13 @@
+import React from 'react'
 import { Flex, Text } from "@chakra-ui/react";
 import { ResponsivePie } from "@nivo/pie";
-import todosData from "../../data/todos.json";
+import { TodoContext } from "../../App";
+import { useTodos } from '../../hooks/todos-context';
 
 export const PieChart = () => {
-  const data = todosData.todos;
+  // const {data} = React.useContext(TodoContext);
+  const {data} = useTodos();
+
   const normalValues = data.filter((data) => data.severity === "Normal").length;
   const importantValues = data.filter((data) => data.severity === "Important")
     .length;
